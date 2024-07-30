@@ -61,10 +61,6 @@ src/
 
 optimized for easy deployment on vercel or netlify. follow their docs for specific instructions.
 
-## license
-
-[mit license](LICENSE)
-
 ## let's connect
 
 | <img src="https://cdn.simpleicons.org/github/4cea91" width="48" height="48" alt="GitHub"> | <img src="https://cdn.simpleicons.org/linkedin/4cea91" width="48" height="48" alt="LinkedIn"> | <img src="https://cdn.simpleicons.org/gmail/4cea91" width="48" height="48" alt="Email"> |
