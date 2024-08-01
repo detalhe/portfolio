@@ -1,6 +1,6 @@
 <div align="center">
 
-# my portfolio {hacker version}
+# my portfolio {hacker edition}
 
 a modern, interactive portfolio showcasing my skills and projects as a full-stack software developer.
 
@@ -10,7 +10,7 @@ a modern, interactive portfolio showcasing my skills and projects as a full-stac
 |:---:|:---:|:---:|:---:|:---:|
 | react | typescript | tailwind css | vite | framer motion |
 
-[view live](https://detalhe.uk/) | [source code](https://github.com/detalhe/portfolio)
+[view live](https://detalhe.uk/)
 
 </div>
 
