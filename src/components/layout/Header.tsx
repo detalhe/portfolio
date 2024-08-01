@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaEnvelope, FaCopy, FaCheck } from "react-icons/fa";
+import { FaMapMarkerAlt, FaEnvelope, FaCopy, FaCheck, FaSun, FaMoon } from "react-icons/fa";
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -17,6 +17,29 @@ const itemVariants = {
 const Header = () => {
   const [copied, setCopied] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [currentTime, setCurrentTime] = useState("");
+  const [isDaytime, setIsDaytime] = useState(true);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const brazilTime = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Sao_Paulo',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      }).format(now);
+      setCurrentTime(brazilTime);
+
+      const hour = now.getHours();
+      setIsDaytime(hour >= 6 && hour < 18);
+    };
+
+    updateTime();
+    const timer = setInterval(updateTime, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("edu@detalhe.uk");
@@ -33,6 +56,14 @@ const Header = () => {
         <p className="flex items-center">
           <FaMapMarkerAlt className="mr-2" size={16} />
           <span>location: brazil</span>
+          <motion.div 
+            className="flex items-center bg-green-800 rounded px-2 py-1 text-green-300 ml-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isDaytime ? <FaSun className="mr-1" size={12} /> : <FaMoon className="mr-1" size={12} />}
+            <span className="text-xs">{currentTime}</span>
+          </motion.div>
         </p>
         <p className="flex items-center relative" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
           <FaEnvelope className="mr-2" size={16} />
