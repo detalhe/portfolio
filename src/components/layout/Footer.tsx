@@ -9,7 +9,8 @@ const iconVariants = {
 
 const Footer = () => {
   return (
-    <footer className="mt-12 pt-6 border-t border-green-700 text-green-300">
+    <footer className="pt-10 text-green-300 relative">
+      <div className="absolute top-0 left-[-2rem] right-[-2rem] h-2 bg-[#4cea91]"></div>
       <div className="flex flex-col items-center">
         <p className="text-sm mb-4">
           made with &lt;3 by{" "}
@@ -38,7 +39,7 @@ const Footer = () => {
           href="https://github.com/detalhe/portfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center text-sm text-green-300 hover:text-green-100 transition-colors duration-200"
+          className="flex items-center text-sm text-green-300 hover:text-green-100 transition-colors duration-200 underline"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
