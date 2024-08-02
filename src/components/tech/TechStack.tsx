@@ -42,8 +42,7 @@ const techStack = [
 const TechStack = () => {
   return (
     <motion.div variants={itemVariants} className="mb-8">
-      <h2 className="text-base mb-4 flex items-center font-bold">{`mainTechStack = [ ... ] =>`}</h2>
-
+      <h2 className="text-base mb-4 flex items-center font-bold">some techs i work with:</h2>
       <div className="flex flex-wrap -m-1">
         {techStack.map((tech, index) => (
           <div key={index} className="flex-grow">

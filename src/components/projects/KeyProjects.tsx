@@ -126,7 +126,7 @@ const ProjectButton = ({ href, icon, text }: { href: string; icon: React.ReactEl
 
 const KeyProjects = () => (
   <motion.div variants={variants.item} className="mb-12">
-    <h2 className="text-base mb-4 flex items-center font-bold">{`keyProjects = () => `}</h2>
+    <h2 className="text-base mb-4 flex items-center font-bold">key projects:</h2>
     <div className="space-y-6">
       {projects.map((project, index) => (
         <ProjectCard key={index} {...project} />
