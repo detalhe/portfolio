@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { FaGithub, FaExternalLinkAlt, FaReact, FaNodeJs, FaJs, FaHtml5, FaCss3Alt, FaDiscord, FaStar, FaCodeBranch } from "react-icons/fa";
 import { SiTailwindcss, SiExpress, SiThreedotjs, SiTypescript } from "react-icons/si";
@@ -30,9 +30,6 @@ interface Project {
   githubUrl: string;
   demoUrl?: string;
   techStack: React.ReactElement[];
-}
-
-interface ProjectWithStats extends Project {
   stars: number;
   forks: number;
 }
@@ -50,6 +47,8 @@ const projects: Project[] = [
       <SiExpress key="express" size={20} className="text-green-300" title="Express.js" />,
       <FaJs key="js" size={20} className="text-green-300" title="JavaScript" />,
     ],
+    stars: 27,
+    forks: 6,
   },
   {
     title: "react radio player",
@@ -62,6 +61,8 @@ const projects: Project[] = [
       <SiTailwindcss key="tailwind" size={20} className="text-green-300" title="Tailwind CSS" />,
       <FaJs key="js" size={20} className="text-green-300" title="JavaScript" />,
     ],
+    stars: 3,
+    forks: 1,
   },
   {
     title: "guitar hero js",
@@ -75,6 +76,8 @@ const projects: Project[] = [
       <FaHtml5 key="html" size={20} className="text-green-300" title="HTML5" />,
       <FaCss3Alt key="css" size={20} className="text-green-300" title="CSS3" />,
     ],
+    stars: 1,
+    forks: 0,
   },
   {
     title: "gemini discord bot",
@@ -87,26 +90,12 @@ const projects: Project[] = [
       <SiTypescript key="typescript" size={20} className="text-green-300" title="TypeScript" />,
       <FaDiscord key="discord" size={20} className="text-green-300" title="Discord.js" />,
     ],
+    stars: 1,
+    forks: 0,
   },
 ];
 
-const fetchGitHubStats = async (url: string): Promise<{ stars: number; forks: number }> => {
-  try {
-    const repo = url.split('github.com/')[1].replace(/\/$/, '');
-    const response = await fetch(`https://api.github.com/repos/${repo}`);
-    if (!response.ok) {
-      console.warn(`Unable to fetch stats for ${url}. Status: ${response.status}`);
-      return { stars: 0, forks: 0 };
-    }
-    const data = await response.json();
-    return { stars: data.stargazers_count, forks: data.forks_count };
-  } catch (error) {
-    console.error('Error fetching GitHub stats:', error);
-    return { stars: 0, forks: 0 };
-  }
-};
-
-const ProjectCard = ({ title, description, longDescription, githubUrl, demoUrl, techStack, stars, forks }: ProjectWithStats) => (
+const ProjectCard = ({ title, description, longDescription, githubUrl, demoUrl, techStack, stars, forks }: Project) => (
   <div className="bg-green-900 p-4 rounded">
     <p className="text-sm mb-3">
       <strong>{title}</strong>. <i>{description}</i>
@@ -150,27 +139,11 @@ const ProjectButton = ({ href, icon, text }: { href: string; icon: React.ReactEl
 );
 
 const KeyProjects = () => {
-  const [projectsWithStats, setProjectsWithStats] = useState<ProjectWithStats[]>([]);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      const updatedProjects = await Promise.all(
-        projects.map(async (project) => {
-          const stats = await fetchGitHubStats(project.githubUrl);
-          return { ...project, ...stats };
-        })
-      );
-      setProjectsWithStats(updatedProjects);
-    };
-
-    fetchStats();
-  }, []);
-
   return (
     <motion.div variants={variants.item} className="mb-12">
       <h2 className="text-base mb-4 flex items-center font-bold">key projects:</h2>
       <div className="space-y-6">
-        {projectsWithStats.map((project, index) => (
+        {projects.map((project, index) => (
           <ProjectCard key={index} {...project} />
         ))}
       </div>
