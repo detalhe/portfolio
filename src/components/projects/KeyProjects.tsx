@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaGithub, FaExternalLinkAlt, FaReact, FaNodeJs, FaJs, FaHtml5, FaCss3Alt, FaDiscord } from "react-icons/fa";
+import { FaGithub, FaExternalLinkAlt, FaReact, FaNodeJs, FaJs, FaHtml5, FaCss3Alt, FaDiscord, FaStar, FaCodeBranch } from "react-icons/fa";
 import { SiTailwindcss, SiExpress, SiThreedotjs, SiTypescript } from "react-icons/si";
 
 const variants = {
@@ -30,6 +30,11 @@ interface Project {
   githubUrl: string;
   demoUrl?: string;
   techStack: React.ReactElement[];
+}
+
+interface ProjectWithStats extends Project {
+  stars: number;
+  forks: number;
 }
 
 const projects: Project[] = [
@@ -85,7 +90,23 @@ const projects: Project[] = [
   },
 ];
 
-const ProjectCard = ({ title, description, longDescription, githubUrl, demoUrl, techStack }: Project) => (
+const fetchGitHubStats = async (url: string): Promise<{ stars: number; forks: number }> => {
+  try {
+    const repo = url.split('github.com/')[1].replace(/\/$/, '');
+    const response = await fetch(`https://api.github.com/repos/${repo}`);
+    if (!response.ok) {
+      console.warn(`Unable to fetch stats for ${url}. Status: ${response.status}`);
+      return { stars: 0, forks: 0 };
+    }
+    const data = await response.json();
+    return { stars: data.stargazers_count, forks: data.forks_count };
+  } catch (error) {
+    console.error('Error fetching GitHub stats:', error);
+    return { stars: 0, forks: 0 };
+  }
+};
+
+const ProjectCard = ({ title, description, longDescription, githubUrl, demoUrl, techStack, stars, forks }: ProjectWithStats) => (
   <div className="bg-green-900 p-4 rounded">
     <p className="text-sm mb-3">
       <strong>{title}</strong>. <i>{description}</i>
@@ -95,6 +116,10 @@ const ProjectCard = ({ title, description, longDescription, githubUrl, demoUrl, 
       <div className="flex flex-wrap gap-2">
         <ProjectButton href={githubUrl} icon={<FaGithub size={16} />} text="git repo" />
         {demoUrl && <ProjectButton href={demoUrl} icon={<FaExternalLinkAlt size={16} />} text="live demo" />}
+        <div className="flex items-center gap-2 text-green-300 text-sm">
+          <span className="flex items-center"><FaStar className="mr-1" /> {stars}</span>
+          <span className="flex items-center"><FaCodeBranch className="mr-1" /> {forks}</span>
+        </div>
       </div>
       <div className="flex flex-wrap gap-2">
         {techStack.map((icon, index) => (
@@ -124,15 +149,33 @@ const ProjectButton = ({ href, icon, text }: { href: string; icon: React.ReactEl
   </motion.a>
 );
 
-const KeyProjects = () => (
-  <motion.div variants={variants.item} className="mb-12">
-    <h2 className="text-base mb-4 flex items-center font-bold">key projects:</h2>
-    <div className="space-y-6">
-      {projects.map((project, index) => (
-        <ProjectCard key={index} {...project} />
-      ))}
-    </div>
-  </motion.div>
-);
+const KeyProjects = () => {
+  const [projectsWithStats, setProjectsWithStats] = useState<ProjectWithStats[]>([]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const updatedProjects = await Promise.all(
+        projects.map(async (project) => {
+          const stats = await fetchGitHubStats(project.githubUrl);
+          return { ...project, ...stats };
+        })
+      );
+      setProjectsWithStats(updatedProjects);
+    };
+
+    fetchStats();
+  }, []);
+
+  return (
+    <motion.div variants={variants.item} className="mb-12">
+      <h2 className="text-base mb-4 flex items-center font-bold">key projects:</h2>
+      <div className="space-y-6">
+        {projectsWithStats.map((project, index) => (
+          <ProjectCard key={index} {...project} />
+        ))}
+      </div>
+    </motion.div>
+  );
+};
 
 export default KeyProjects;
